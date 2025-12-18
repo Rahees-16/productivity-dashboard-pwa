@@ -5,7 +5,7 @@
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  
+
   --font-family: 'Outfit', sans-serif;
 }
 
@@ -18,10 +18,12 @@
 body {
   font-family: var(--font-family);
   background-color: var(--bg-color);
-  background-image: 
-    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+  background-image:
+    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+    radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+  background-attachment: fixed;
+  /* Ensures background stays when scrolling */
   color: var(--text-color);
   min-height: 100vh;
   display: flex;
@@ -51,12 +53,15 @@ body {
 
 .glass-panel:hover {
   border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  /* Subtle lift */
 }
 
 /* Layout */
 .header {
   display: flex;
   justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .grid-container {
@@ -64,6 +69,12 @@ body {
   grid-template-columns: 1.5fr 1fr;
   gap: 2rem;
   width: 100%;
+}
+
+.main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .side-column {
@@ -84,20 +95,32 @@ body {
 .widget-medium {
   flex: 1;
   min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  /* Ensure headers and content stack */
 }
 
 /* Typography */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-weight: 600;
   margin-bottom: 1rem;
+  color: var(--text-color);
 }
 
 button {
   cursor: pointer;
   font-family: inherit;
+  transition: opacity 0.2s;
 }
 
-input, textarea {
+button:hover {
+  opacity: 0.8;
+}
+
+input,
+textarea {
   font-family: inherit;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--glass-border);
@@ -105,9 +128,11 @@ input, textarea {
   border-radius: 8px;
   padding: 0.8rem;
   outline: none;
+  transition: border-color 0.2s;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   border-color: var(--accent-color);
 }
 
@@ -115,23 +140,178 @@ input:focus, textarea:focus {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* --- Feature Specific Styles --- */
+
+/* Calendar Styles */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  text-align: center;
+  width: 100%;
+}
+
+.calendar-day-name {
+  font-weight: 600;
+  opacity: 0.7;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.calendar-day {
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+
+.calendar-day:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.calendar-day.today {
+  border: 1px solid var(--accent-color);
+  background: rgba(129, 140, 248, 0.15);
+}
+
+.calendar-day.empty {
+  background: transparent;
+  cursor: default;
+  pointer-events: none;
+}
+
+.day-marker {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  margin-top: auto;
+  /* Push to bottom */
+  margin-bottom: 4px;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  /* Ensure it doesn't block clicks when hidden */
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  background: #1e293b;
+  /* Fallback */
+  background: rgba(30, 41, 59, 0.95);
+  /* Slightly translucent */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  color: white;
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 0;
+}
+
+.modal-close:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Day Detail Styles in Modal */
+.detail-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.task-item-dated {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsiveness */
 @media (max-width: 768px) {
   .grid-container {
     grid-template-columns: 1fr;
   }
-  
+
   #app {
     padding: 1rem;
+  }
+
+  .calendar-day {
+    min-height: 60px;
+    padding: 0.2rem;
   }
 }
