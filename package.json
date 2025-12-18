@@ -10,5 +10,10 @@
   },
   "devDependencies": {
     "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^8.0.0"
   }
 }
