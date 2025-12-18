@@ -23,7 +23,6 @@ body {
     radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
     radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
   background-attachment: fixed;
-  /* Ensures background stays when scrolling */
   color: var(--text-color);
   min-height: 100vh;
   display: flex;
@@ -54,7 +53,6 @@ body {
 .glass-panel:hover {
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
-  /* Subtle lift */
 }
 
 /* Layout */
@@ -97,7 +95,6 @@ body {
   min-height: 200px;
   display: flex;
   flex-direction: column;
-  /* Ensure headers and content stack */
 }
 
 /* Typography */
@@ -112,11 +109,15 @@ h3 {
 button {
   cursor: pointer;
   font-family: inherit;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, transform 0.1s;
 }
 
 button:hover {
-  opacity: 0.8;
+  opacity: 0.9;
+}
+
+button:active {
+  transform: scale(0.98);
 }
 
 input,
@@ -128,12 +129,13 @@ textarea {
   border-radius: 8px;
   padding: 0.8rem;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s;
 }
 
 input:focus,
 textarea:focus {
   border-color: var(--accent-color);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 /* Scrollbar */
@@ -219,7 +221,6 @@ textarea:focus {
   border-radius: 50%;
   background: var(--accent-color);
   margin-top: auto;
-  /* Push to bottom */
   margin-bottom: 4px;
 }
 
@@ -245,7 +246,6 @@ textarea:focus {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
-  /* Ensure it doesn't block clicks when hidden */
 }
 
 .modal-content {
@@ -254,10 +254,7 @@ textarea:focus {
   max-height: 85vh;
   overflow-y: auto;
   position: relative;
-  background: #1e293b;
-  /* Fallback */
   background: rgba(30, 41, 59, 0.95);
-  /* Slightly translucent */
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 2rem;
@@ -300,6 +297,74 @@ textarea:focus {
   margin-bottom: 0.5rem;
 }
 
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--glass-border);
+  transition: .3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked+.slider {
+  background-color: var(--accent-color);
+}
+
+input:checked+.slider:before {
+  transform: translateX(20px);
+}
+
+/* Animations */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s infinite;
+}
+
 /* Responsiveness */
 @media (max-width: 768px) {
   .grid-container {
@@ -314,4 +379,39 @@ textarea:focus {
     min-height: 60px;
     padding: 0.2rem;
   }
+}
+
+
+
+/* Force Dark Mode on Pickers */
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: 0.2s;
+}
+
+::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+input[type="time"],
+input[type="date"] {
+  color-scheme: dark;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+/* Hide the default calendar icon since we made the whole input clickable, 
+   or keep it but ensure it's inverted properly. The user didn't explicitly ask to hide it, 
+   but clicking 'anywhere' implies the input acts as the button. 
+   We'll keep the icon as a visual cue but ensure the background is gone. */
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: 0.2s;
+  background-color: transparent;
+  /* Ensure no white bg on the icon itself */
 }
